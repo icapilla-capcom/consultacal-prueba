@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consulta de Calificaciones CBTis No. 242</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0f4f3;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      color: #1a1a1a;
+    }
+
+    .container { width: 100%; max-width: 480px; }
+
+    /* ── TARJETA LOGIN ── */
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+      padding: 2.5rem 2rem;
+    }
+
+    .logo {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: #e1f5ee;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.25rem;
+    }
+
+    .logo svg { width: 26px; height: 26px; }
+
+    .card-title {
+      font-size: 20px; font-weight: 700;
+      text-align: center; color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+
+    .card-sub {
+      font-size: 13px; color: #888;
+      text-align: center; margin-bottom: 1.75rem;
+      line-height: 1.5;
+    }
+
+    label {
+      display: block; font-size: 13px;
+      color: #555; margin-bottom: 6px; font-weight: 500;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 15px;
+      color: #1a1a1a;
+      background: #fafafa;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      font-family: inherit;
+      margin-bottom: 1rem;
+    }
+
+    input[type="text"]:focus, input[type="password"]:focus {
+      border-color: #1D9E75;
+      background: #fff;
+    }
+
+    .btn {
+      width: 100%;
+      background: #1D9E75;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s;
+      margin-top: 4px;
+    }
+
+    .btn:hover { background: #0F6E56; }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { background: #aaa; cursor: not-allowed; }
+
+    .error-msg {
+      background: #fff5f5;
+      border: 1px solid #f5c6c6;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #c0392b;
+      margin-top: 12px;
+      display: none;
+      text-align: center;
+    }
+
+    .loading-msg {
+      text-align: center;
+      font-size: 13px;
+      color: #888;
+      margin-top: 12px;
+      display: none;
+    }
+
+    /* ── PANTALLA DE RESULTADOS ── */
+    .results { display: none; }
+
+    .results-header {
+      background: #fff;
+      border-radius: 14px;
+      border-top: 6px solid #1D9E75;
+      padding: 1.5rem;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      text-align: center;
+    }
+
+    .alumno-nombre {
+      font-size: 19px; font-weight: 700;
+      color: #1a1a1a; margin-bottom: 4px;
+    }
+
+    .alumno-meta {
+      font-size: 13px; color: #888;
+    }
+
+    .calif-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .calif-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.1rem 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      text-align: center;
+    }
+
+    .calif-label {
+      font-size: 12px; color: #888;
+      margin-bottom: 6px; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    .calif-value {
+      font-size: 28px; font-weight: 700;
+      color: #1D9E75;
+    }
+
+    .calif-value.total {
+      font-size: 36px;
+      color: #0F6E56;
+    }
+
+    .total-card {
+      background: #e1f5ee;
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      margin-bottom: 14px;
+    }
+
+    .total-label {
+      font-size: 13px; color: #0F6E56;
+      font-weight: 600; margin-bottom: 6px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 13px; font-weight: 600;
+      margin-top: 8px;
+    }
+
+    .badge-aprobado { background: #c6f0de; color: #0a5c3a; }
+    .badge-reprobado { background: #fde8e8; color: #8b1a1a; }
+
+    .logout-btn {
+      width: 100%;
+      background: transparent;
+      border: 1.5px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 14px;
+      color: #888;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .logout-btn:hover { border-color: #1D9E75; color: #1D9E75; }
+
+    .nota {
+      font-size: 11px; color: #aaa;
+      text-align: center; margin-top: 12px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- PANTALLA DE LOGIN -->
+  <div class="card" id="loginCard">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+        <path d="M2 17l10 5 10-5"/>
+        <path d="M2 12l10 5 10-5"/>
+      </svg>
+    </div>
+    <div class="card-title">Consulta de calificaciones</div>
+    <div class="card-sub">Ingresa tu clave para ver tus resultados</div>
+
+    <label for="claveInput">Clave de alumno</label>
+    <input type="password" id="claveInput" placeholder="Ej. 6B1"
+           onkeydown="if(event.key==='Enter') consultar()">
+
+    <button class="btn" id="consultarBtn" onclick="consultar()">Consultar mis calificaciones</button>
+
+    <div class="error-msg" id="errorMsg">Clave incorrecta. Verifica e intenta de nuevo.</div>
+    <div class="loading-msg" id="loadingMsg">Buscando tus calificaciones...</div>
+  </div>
+
+  <!-- PANTALLA DE RESULTADOS -->
+  <div class="results" id="resultsPanel">
+
+    <div class="results-header">
+      <div class="alumno-nombre" id="rNombre"></div>
+      <div class="alumno-meta" id="rMeta"></div>
+    </div>
+
+    <div class="calif-grid">
+      <div class="calif-card">
+        <div class="calif-label">Asistencia</div>
+        <div class="calif-value" id="rAsistencia"></div>
+      </div>
+      <div class="calif-card">
+        <div class="calif-label">Actitud</div>
+        <div class="calif-value" id="rActitud"></div>
+      </div>
+      <div class="calif-card">
+        <div class="calif-label">Actividades</div>
+        <div class="calif-value" id="rActividades"></div>
+      </div>
+      <div class="calif-card">
+        <div class="calif-label">Cuestionario</div>
+        <div class="calif-value" id="rCuestionario"></div>
+      </div>
+    </div>
+
+    <div class="total-card">
+      <div class="total-label">Calificación final</div>
+      <div class="calif-value total" id="rTotal"></div>
+      <div id="rBadge"></div>
+    </div>
+
+    <button class="logout-btn" onclick="cerrarSesion()">Cerrar sesion</button>
+    <div class="nota">Tus calificaciones son confidenciales.<br>Si tienes dudas consulta a tu maestro.</div>
+
+  </div>
+
+</div>
+
+<script>
+  // ============================================================
+  // PASO 1: Pega aquí la URL de tu Apps Script
+  // ============================================================
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx_zB0nvMwd1_hqeynoBuEiu5QokpKdPxl8n-zMHTcZTtj01HCjGOKNu8nvaQnQOa_q/exec";
+  // ============================================================
+
+  function consultar() {
+    const clave = document.getElementById('claveInput').value.trim();
+    if (!clave) {
+      mostrarError('Ingresa tu clave de alumno.');
+      return;
+    }
+
+    document.getElementById('consultarBtn').disabled = true;
+    document.getElementById('loadingMsg').style.display = 'block';
+    document.getElementById('errorMsg').style.display = 'none';
+
+    fetch(APPS_SCRIPT_URL + '?clave=' + encodeURIComponent(clave))
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById('consultarBtn').disabled = false;
+        document.getElementById('loadingMsg').style.display = 'none';
+
+        if (data.error) {
+          mostrarError('Clave incorrecta. Verifica e intenta de nuevo.');
+          return;
+        }
+
+        mostrarResultados(data);
+      })
+      .catch(() => {
+        document.getElementById('consultarBtn').disabled = false;
+        document.getElementById('loadingMsg').style.display = 'none';
+        mostrarError('Error de conexión. Intenta de nuevo.');
+      });
+  }
+
+  function mostrarResultados(d) {
+    document.getElementById('loginCard').style.display = 'none';
+    document.getElementById('resultsPanel').style.display = 'block';
+
+    document.getElementById('rNombre').textContent = d.nombre;
+    document.getElementById('rMeta').textContent = 'Grupo: ' + d.grupo + '  ·  Parcial: ' + d.parcial;
+    document.getElementById('rAsistencia').textContent = parseFloat(d.asistencia).toFixed(1);
+    document.getElementById('rActitud').textContent = parseFloat(d.actitud).toFixed(1);
+    document.getElementById('rActividades').textContent = parseFloat(d.actividades).toFixed(2);
+    document.getElementById('rCuestionario').textContent = parseFloat(d.cuestionario).toFixed(1);
+
+    const total = parseFloat(d.total);
+    document.getElementById('rTotal').textContent = total.toFixed(2);
+
+    const badge = document.getElementById('rBadge');
+    if (total >= 60) {
+      badge.innerHTML = '<span class="badge badge-aprobado">Aprobado</span>';
+    } else {
+      badge.innerHTML = '<span class="badge badge-reprobado">Reprobado</span>';
+    }
+  }
+
+  function mostrarError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  function cerrarSesion() {
+    document.getElementById('claveInput').value = '';
+    document.getElementById('loginCard').style.display = 'block';
+    document.getElementById('resultsPanel').style.display = 'none';
+    document.getElementById('errorMsg').style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
